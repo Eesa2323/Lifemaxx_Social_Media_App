@@ -568,7 +568,7 @@ router.post("/request-reset-password", async (req, res) => {
 
     const mailOptions = {
         to: user.email,
-        from: config.get("GMAIL.email"),
+        from: config.get("GMAIL_EMAIL"),
         subject: "Password Reset",
         text: `Here is you're code to reset your password. Code: ${token}`,
     }

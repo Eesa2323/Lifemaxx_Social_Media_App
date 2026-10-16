@@ -1,2 +1,22 @@
-/backend/config
+# Dependency directories
+node_modules/
+
+# Local environment files and secrets
 .env
+.env.*
+!.env.example
+
+# Runtime-generated files
+backend/tmp/
+backend/uploads/
+
+# Frontend build output
+frontend/build/
+
+# Local logs
+*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/

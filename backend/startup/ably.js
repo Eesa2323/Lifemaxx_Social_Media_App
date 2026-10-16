@@ -1,8 +1,9 @@
 const { Rest } = require("ably")
+const config = require("config")
 
 module.exports = function (app) {
     const ablyRest = new Rest({
-        key: "4sRwYg.WLqbXg:uYqTc1moWbTzzLY73kTMFw4ipBKdNW7Ihwi7ONqYFKw",
+        key: config.get("ABLY_API_KEY"),
     })
     app.set("ablyRest", ablyRest)
 }

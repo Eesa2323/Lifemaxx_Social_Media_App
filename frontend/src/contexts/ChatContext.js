@@ -235,7 +235,7 @@ export function ChatProvider({ children }) {
         }
 
         client = new Ably.Realtime({
-            authUrl: "http://localhost:5000/api/ably/token",
+            authUrl: `${BASE_URL}/api/ably/token`,
             authHeaders: { "x-auth-token": `${authToken}` },
             closeOnUnload: true,
         })
