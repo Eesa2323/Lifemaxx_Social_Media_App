@@ -180,7 +180,9 @@ const Navbar = ({ style = {}, visible = true }) => {
                             }}
                             style={sidebarStyles.menuItem}
                         >
-                            <MessagesBadge />
+                            <span className='icon-wrapper' style={sidebarStyles.icon}>
+                                <MessagesBadge />
+                            </span>
                             {!collapsed && <span style={sidebarStyles.label}>Messages</span>}
                         </div>
                         <div
@@ -194,10 +196,9 @@ const Navbar = ({ style = {}, visible = true }) => {
                             }}
                             style={sidebarStyles.menuItem}
                         >
-                            <BiBell
-                                size={21}
-                                color='#aaa'
-                            />
+                            <span className='icon-wrapper' style={sidebarStyles.icon}>
+                                <BiBell size={21} color='var(--text-muted)' />
+                            </span>
                             {!collapsed && <span style={sidebarStyles.label}>Notifications</span>}
                         </div>
                         <div
@@ -211,7 +212,7 @@ const Navbar = ({ style = {}, visible = true }) => {
                             }}
                             style={sidebarStyles.menuItem}
                         >
-                            <span style={sidebarStyles.icon}>
+                            <span className='icon-wrapper' style={sidebarStyles.icon}>
                                 <ProfilePic
                                     src={
                                         userData?.profilePic &&

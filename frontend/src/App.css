@@ -740,3 +740,22 @@
     border-radius: 20px;
     padding: 1rem;
 }
+
+.home-trending-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #e5e7eb;
+}
+
+.home-trending-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e5e7eb;
+}
+
+.home-trending-username {
+    font-size: 0.8rem;
+}

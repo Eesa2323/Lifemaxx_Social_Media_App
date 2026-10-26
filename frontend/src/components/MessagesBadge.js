@@ -17,8 +17,8 @@ const MessagesBadge = () => {
             style={styles.iconWrapper}
         >
             <BiMessage
-                size={22}
-                color='#aaa'
+                size={21}
+                color='var(--text-muted)'
             />
             {!isLoading && data?.count > 0 && <div style={styles.badge}>{displayCount}</div>}
         </div>
@@ -50,7 +50,7 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         padding: "0 4px",
-        border: "2px solid #111",
+        border: "2px solid var(--surface)",
     },
 }
 

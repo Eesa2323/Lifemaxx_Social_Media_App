@@ -42,7 +42,7 @@ const styles = {
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
-        margin: "0 auto",
+        margin: "1rem auto 0",
         transition: "none",
     },
     cardMobile: {

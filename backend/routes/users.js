@@ -178,12 +178,12 @@ router.put(
         const user = await User.findOneAndUpdate(
             { _id: userId },
             { $set: updatedPayload },
-            { new: true }
+            { new: true },
         )
         if (!user) return res.status(400).send("Could not find authenticated user")
 
         res.send({ updatedPayload })
-    }
+    },
 )
 
 router.post("/block/:userid", [auth], async (req, res) => {
@@ -200,29 +200,29 @@ router.post("/block/:userid", [auth], async (req, res) => {
             const result = await Blocks.updateOne(
                 { blocker: userId, blocked: targetUserId },
                 { $setOnInsert: { blocker: userId, blocked: targetUserId } },
-                { upsert: true, session }
+                { upsert: true, session },
             )
 
             await User.updateMany(
                 { _id: userId },
                 { $pull: { recentUserSearchers: targetUserId } },
-                { session }
+                { session },
             )
             await User.updateMany(
                 { _id: targetUserId },
                 { $pull: { recentUserSearchers: userId } },
-                { session }
+                { session },
             )
 
             if (result.upsertedCount !== 1) throw new Error("Already blocked user")
 
             const follow1 = await Follow.deleteOne(
                 { follower: targetUserId, following: userId },
-                { session }
+                { session },
             )
             const follow2 = await Follow.deleteOne(
                 { follower: userId, following: targetUserId },
-                { session }
+                { session },
             )
 
             let ops = []
@@ -349,7 +349,7 @@ async function handleFollow(userId, targetUserId) {
         await Request.updateOne(
             { requester: userId, requested: targetUserId },
             { $setOnInsert: { requester: userId, requested: targetUserId } },
-            { upsert: true }
+            { upsert: true },
         )
 
         return { type: "follow", private: true }
@@ -364,7 +364,7 @@ async function handleFollow(userId, targetUserId) {
                     following: targetUserId,
                 },
                 { $setOnInsert: { follower: userId, following: targetUserId } },
-                { upsert: true, session }
+                { upsert: true, session },
             )
 
             if (!followResult.upsertedCount) throw new Error("Already following user")
@@ -372,7 +372,7 @@ async function handleFollow(userId, targetUserId) {
             const targetUserUpdate = await User.updateOne(
                 { _id: targetUserId },
                 { $inc: { followerCount: 1 } },
-                { session }
+                { session },
             )
 
             if (!targetUserUpdate.modifiedCount) throw new Error("Could not follow user")
@@ -380,7 +380,7 @@ async function handleFollow(userId, targetUserId) {
             const userUpdate = await User.updateOne(
                 { _id: userId },
                 { $inc: { followingCount: 1 } },
-                { session }
+                { session },
             )
             if (!userUpdate.modifiedCount) throw new Error("Could not follow user")
 
@@ -392,7 +392,7 @@ async function handleFollow(userId, targetUserId) {
                         type: "follow",
                     },
                 ],
-                { session }
+                { session },
             )
 
             await session.commitTransaction()
@@ -419,19 +419,19 @@ async function handleUnfollow(userId, targetUserId) {
         await session.withTransaction(async () => {
             const { deletedCount } = await Follow.deleteOne(
                 { follower: userId, following: targetUserId },
-                { session }
+                { session },
             )
             if (!deletedCount) return
 
             await Notification.deleteOne(
                 { to: targetUserId, from: userId, type: "follow" },
-                { session }
+                { session },
             )
 
             await User.updateOne(
                 { _id: targetUserId },
                 { $inc: { followerCount: -1 } },
-                { session }
+                { session },
             )
             await User.updateOne({ _id: userId }, { $inc: { followingCount: -1 } }, { session })
         })
@@ -809,8 +809,6 @@ router.get("/connect-list", [unrequiredAuth], async (req, res) => {
     // Default to newest users first without relying on createdAt (not guaranteed to exist)
     let sortObj = { _id: -1 }
 
-    await delay(6000)
-
     // Exclude self if authenticated
     if (userId) query._id = { $ne: userId }
 
@@ -904,7 +902,7 @@ router.post("/recent-searchers", [auth], async (req, res) => {
 
         // Remove the user if already exists (to maintain order)
         user.recentUserSearchers = user.recentUserSearchers.filter(
-            (id) => id.toString() !== targetUserId
+            (id) => id.toString() !== targetUserId,
         )
 
         // Add to the beginning of the array
@@ -933,7 +931,7 @@ router.delete("/recent-searchers/:targetUserId", [auth], async (req, res) => {
         if (!user) return res.status(400).send("User not found")
 
         user.recentUserSearchers = user.recentUserSearchers.filter(
-            (id) => id.toString() !== targetUserId
+            (id) => id.toString() !== targetUserId,
         )
 
         await user.save()
@@ -975,7 +973,7 @@ router.delete("/remove-follower/:followerId", [auth], async (req, res) => {
                     follower: followerId,
                     following: userId,
                 },
-                { session }
+                { session },
             )
 
             // Update follower counts
@@ -1009,7 +1007,7 @@ async function createUserToken(userId, tokenType, payload = null) {
                 userId,
             },
         },
-        { upsert: true }
+        { upsert: true },
     )
 
     return token
@@ -1054,10 +1052,30 @@ async function createUserToken(userId, tokenType, payload = null) {
                 userId,
             },
         },
-        { upsert: true }
+        { upsert: true },
     )
 
     return token
 }
+
+// Get latest users (5 latest, excluding current user if authenticated)
+router.get("/latest", [unrequiredAuth], async (req, res) => {
+    try {
+        const userId = req.user ? new mongoose.Types.ObjectId(req.user._id) : null
+        const limit = 5
+        const query = {}
+        if (userId) query._id = { $ne: userId }
+
+        const users = await User.find(query)
+            .select("username profilePic bio")
+            .sort({ _id: -1 })
+            .limit(limit)
+
+        res.send(users)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send("Could not fetch latest users")
+    }
+})
 
 module.exports = router

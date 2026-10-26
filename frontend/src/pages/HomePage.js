@@ -5,7 +5,6 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
 
 import JourneyPost from "../components/JourneyPost"
-import StoriesBar from "../components/StoriesBar"
 
 import { PostFeedMuteProvider } from "../contexts/PostFeedMuteContext"
 import axios from "../utils/axios"
@@ -20,6 +19,21 @@ const HomePage = () => {
 
     const [currentlyPlayingId, setCurrentlyPlayingId] = useState(null)
     const [inViewMap, setInViewMap] = useState({})
+    const [latestUsers, setLatestUsers] = useState([])
+
+    useEffect(() => {
+        const fetchLatestUsers = async () => {
+            try {
+                const res = await axios.get("/api/users/latest", {
+                    headers: token ? { "x-auth-token": token } : {},
+                })
+                setLatestUsers(res.data || [])
+            } catch (err) {
+                setLatestUsers([])
+            }
+        }
+        fetchLatestUsers()
+    }, [token])
 
     const containerRefs = useRef([])
     const intersectionRatiosRef = useRef({})
@@ -130,40 +144,10 @@ const HomePage = () => {
     return (
         <div className='page-wrapper home-page'>
             <div className='home-page-top'>
-                <div className='home-page-head'>
-                    <h1>Feed</h1>
-                </div>
-                <div className='home-page-actions'>
-                    <button className='home-pill-btn'>Following</button>
-                    <button className='home-pill-btn home-pill-secondary'>For you</button>
-                </div>
             </div>
 
             <div className='home-grid'>
                 <main className='home-left'>
-                    {token && (
-                        <div className='home-post-creator-card'>
-                            <div className='creator-avatar' />
-                            <div className='creator-content'>
-                                <span className='creator-label'>Create a post</span>
-                                <p className='creator-copy'>
-                                    Share a story, journey, or photo with your network.
-                                </p>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className='stories-panel'>
-                        <div className='stories-panel-header'>Stories</div>
-                        {token ? (
-                            <StoriesBar />
-                        ) : (
-                            <p className='home-stories-placeholder'>
-                                Sign in to browse stories from people you follow.
-                            </p>
-                        )}
-                    </div>
-
                     <PostFeedMuteProvider>
                         <div className='feed-column'>
                             {(isLoading || status === "pending") && (
@@ -195,6 +179,7 @@ const HomePage = () => {
                                             >
                                                 <JourneyPost
                                                     post={post}
+                                                    cacheKey={["feed"]}
                                                     shouldPlay={currentlyPlayingId === post._id}
                                                     isInView={!!inViewMap[post._id]}
                                                     postContainerRef={refCallback}
@@ -208,55 +193,37 @@ const HomePage = () => {
                         </div>
                     </PostFeedMuteProvider>
                 </main>
-
-                <aside className='home-aside'>
-                    <div className='home-trending-card'>
-                        <div className='home-trending-header'>Trending now</div>
-                        <div className='home-trending-list'>
-                            <div className='home-trending-item'>
-                                <div>
-                                    <strong>#CommunityFirst</strong>
-                                    <p>20.4K posts</p>
-                                </div>
-                                <span>Live</span>
-                            </div>
-                            <div className='home-trending-item'>
-                                <div>
-                                    <strong>#JourneySpotlight</strong>
-                                    <p>8.9K posts</p>
-                                </div>
-                                <span>Hot</span>
-                            </div>
-                            <div className='home-trending-item'>
-                                <div>
-                                    <strong>#LeaderStories</strong>
-                                    <p>5.1K posts</p>
-                                </div>
-                                <span>New</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='home-overview-card'>
-                        <h2>Suggested actions</h2>
-                        <div className='home-aside-list'>
-                            <div className='home-aside-item'>
-                                <span>Follow one new community</span>
-                                <strong>Discover</strong>
-                            </div>
-                            <div className='home-aside-item'>
-                                <span>Engage with trending posts</span>
-                                <strong>React</strong>
-                            </div>
-                            <div className='home-aside-item'>
-                                <span>Share your latest journey</span>
-                                <strong>Post</strong>
+                {!isMobile && (
+                    <aside className='home-aside'>
+                        <div className='home-trending-card' style={{ border: '1px solid var(--border)', borderRadius: '12px', padding: '12px' }}>
+                            <div className='home-trending-header' style={{ fontWeight: 600, marginBottom: '10px' }}>Latest users</div>
+                            <div className='home-trending-list' style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                {latestUsers.map((u) => (
+                                    <div
+                                        key={u._id}
+                                        className='home-trending-item'
+                                        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px', borderRadius: '8px', cursor: 'pointer', border: '1px solid var(--border)' }}
+                                        onClick={() => window.location.href = `/profile/${u.username}`}
+                                    >
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+                                            {u.profilePic ? (
+                                                <img
+                                                    src={`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/uploads/profilePics/${u.profilePic}`}
+                                                    alt={u.username}
+                                                    className='home-trending-avatar'
+                                                    style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                                                />
+                                            ) : (
+                                                <div className='home-trending-avatar-placeholder' style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--surface-strong)' }} />
+                                            )}
+                                            <span className='home-trending-username' style={{ fontSize: '0.9rem' }}>{u.username}</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    </div>
-
-                    {/* Location search removed from sidebar for Instagram-like layout */}
-                </aside>
+                    </aside>
+                )}
             </div>
         </div>
     )
