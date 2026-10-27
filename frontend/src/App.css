@@ -389,6 +389,7 @@
     gap: 1.25rem;
     width: 100%;
     align-items: stretch;
+    height: 100%;
 }
 
 .chat-sidebar-panel,
@@ -407,6 +408,7 @@
     display: flex;
     flex-direction: column;
     min-height: 72vh;
+    height: 100%;
     overflow: hidden;
 }
 

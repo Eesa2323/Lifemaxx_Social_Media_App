@@ -102,10 +102,10 @@ const Chats = () => {
     }
 
     return (
-        <div className='page-wrapper chats-page'>
-            <div className='chat-layout'>
+        <div className='page-wrapper chats-page' style={{ padding: isMobile ? 0 : undefined, maxWidth: '100%' }}>
+            <div className='chat-layout' style={isMobile ? { height: 'calc(100vh - 56px)', marginTop: '56px', width: '100vw', maxWidth: '100vw' } : { height: 'calc(100vh - 80px)' }}>
                 {displayNavbar && (
-                    <aside className='chat-sidebar-panel'>
+                    <aside className='chat-sidebar-panel' style={isMobile ? { width: '100%', maxWidth: '100%', height: '100%', borderRadius: 0, border: 'none' } : {}}>
                         <div style={styles.headerContainer}>
                             {isMobile && (
                                 <BackIcon
@@ -275,7 +275,7 @@ const Chats = () => {
                 )}
 
                 {displayChatWindow && (
-                    <main className='chat-main-panel'>
+                    <main className='chat-main-panel' style={isMobile ? { width: '100vw', maxWidth: '100vw', height: 'calc(100vh - 56px)', marginTop: '56px', borderRadius: 0, border: 'none' } : {}}>
                         <div className='chat-header-panel'>
                             <div>
                                 <span
@@ -308,92 +308,93 @@ const Chats = () => {
     )
 }
 
-const styles = {
-    navbarStyle: {
-        width: 300,
-        color: "white",
-        backgroundColor: "black",
-        borderRight: "1px solid var(--lightGrey)",
-        height: "100vh",
-        overflow: "auto",
-    },
-    mobileNavbarStyle: {
-        width: "100%",
-        color: "white",
-        backgroundColor: "black",
-        borderRight: "1px solid var(--lightGrey)",
-        height: "100vh",
-        overflow: "auto",
-    },
-    latestMessageText: {
-        fontSize: 14,
-        color: "var(--test)",
-    },
-    chatListContainer: {
-        width: "100%",
-        marginTop: 30,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-    },
-    chatListItemContainer: {
-        width: "100%",
-        padding: "8px 18px",
-    },
-    chatWindowWrapper: {
-        flexGrow: 1,
-    },
-    headingText: {
-        fontSize: 20,
-    },
-    newChatHeading: {
-        fontSize: 18,
-        marginTop: 25,
-    },
-    headerContainer: {
-        marginTop: 30,
-        padding: "0 25px",
-        display: "flex",
-        alignItems: "center",
-    },
-    selectedUsersContainer: {
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 20,
-        width: "85%",
-        margin: "15px 0",
-    },
-    createText: {
-        position: "absolute",
-        right: 15,
-        top: 10,
-    },
+    const styles = {
+        navbarStyle: {
+            width: 300,
+            color: "white",
+            backgroundColor: "black",
+            borderRight: "1px solid var(--lightGrey)",
+            height: "100vh",
+            overflow: "auto",
+        },
+        mobileNavbarStyle: {
+            width: "100%",
+            color: "white",
+            backgroundColor: "black",
+            borderRight: "1px solid var(--lightGrey)",
+            height: "100vh",
+            overflow: "auto",
+        },
+        latestMessageText: {
+            fontSize: 14,
+            color: "var(--test)",
+        },
+        chatListContainer: {
+            width: "100%",
+            marginTop: 30,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+        },
+        chatListItemContainer: {
+            width: "100%",
+            padding: "8px 18px",
+        },
+        chatWindowWrapper: {
+            flexGrow: 1,
+            height: "100%",
+        },
+        headingText: {
+            fontSize: 20,
+        },
+        newChatHeading: {
+            fontSize: 18,
+            marginTop: 25,
+        },
+        headerContainer: {
+            marginTop: 30,
+            padding: "0 25px",
+            display: "flex",
+            alignItems: "center",
+        },
+        selectedUsersContainer: {
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 20,
+            width: "85%",
+            margin: "15px 0",
+        },
+        createText: {
+            position: "absolute",
+            right: 15,
+            top: 10,
+        },
 
-    inputStyle: {
-        width: "100%",
-        backgroundColor: "var(--darkGrey)",
-        border: "1px solid var(--darkGrey2)",
-        height: 38,
-        fontSize: 15,
-        borderRadius: 5,
-    },
+        inputStyle: {
+            width: "100%",
+            backgroundColor: "var(--darkGrey)",
+            border: "1px solid var(--darkGrey2)",
+            height: 38,
+            fontSize: 15,
+            borderRadius: 5,
+        },
 
-    newChatModal: {
-        position: "absolute",
-        top: "35%",
-        left: "50%",
-        transform: "translate(-50%, -35%)",
-        width: "30%",
-        minWidth: 200,
-        height: 450,
-        minHeight: 300,
-        overflow: "auto",
-        display: "flex",
-        flexDirection: " column",
-        alignItems: "center",
-        outline: "none",
-        bgcolor: "var(--darkGrey3)",
-        border: "1px solid var(--darkGrey2)",
-    },
-}
+        newChatModal: {
+            position: "absolute",
+            top: "35%",
+            left: "50%",
+            transform: "translate(-50%, -35%)",
+            width: "30%",
+            minWidth: 200,
+            height: 450,
+            minHeight: 300,
+            overflow: "auto",
+            display: "flex",
+            flexDirection: " column",
+            alignItems: "center",
+            outline: "none",
+            bgcolor: "var(--darkGrey3)",
+            border: "1px solid var(--darkGrey2)",
+        },
+    }
 export default Chats

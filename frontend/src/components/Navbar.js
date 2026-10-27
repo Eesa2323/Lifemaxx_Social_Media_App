@@ -262,19 +262,21 @@ const Navbar = ({ style = {}, visible = true }) => {
         <>
             <nav
                 className='mobile-header'
-                style={{ ...mobileStyles.header, ...style }}
+                style={{ ...mobileStyles.header, ...style, overflow: 'visible' }}
             >
                 <div style={mobileStyles.left}>
                     <span style={mobileStyles.brand}>LifeMax</span>
                 </div>
                 <div style={mobileStyles.center}></div>
-                <div style={mobileStyles.right}>
+                <div style={{ ...mobileStyles.right, gap: 2, flexWrap: 'nowrap' }}>
                     {/* Discover */}
                     <button
                         className='mobile-icon-button'
                         style={{
                             ...mobileStyles.iconButton,
-                            ...{ marginBottom: 1, marginRight: 14 },
+                            width: 38,
+                            height: 38,
+                            marginLeft: 4,
                         }}
                         onClick={() => {
                             setOpenModal("")
@@ -283,8 +285,8 @@ const Navbar = ({ style = {}, visible = true }) => {
                         aria-label='Discover'
                     >
                         <BiCompass
-                            size={25}
-                            color='#aaa'
+                            size={20}
+                            color='#fff'
                         />
                     </button>
 
@@ -293,7 +295,9 @@ const Navbar = ({ style = {}, visible = true }) => {
                         className='mobile-icon-button'
                         style={{
                             ...mobileStyles.iconButton,
-                            ...{ marginTop: 2, marginRight: 12 },
+                            width: 38,
+                            height: 38,
+                            marginLeft: 4,
                         }}
                         onClick={() => {
                             setOpenModal("")
@@ -302,14 +306,14 @@ const Navbar = ({ style = {}, visible = true }) => {
                         aria-label='Messages'
                     >
                         <BiMessage
-                            size={24}
-                            color='#aaa'
+                            size={20}
+                            color='#fff'
                         />
                     </button>
                     {/* Notifications Icon Only */}
                     <button
                         className='mobile-icon-button'
-                        style={mobileStyles.iconButton}
+                        style={{ ...mobileStyles.iconButton, width: 38, height: 38, marginLeft: 4 }}
                         onClick={() => {
                             if (!token) {
                                 // Show login popup for notifications
@@ -321,8 +325,8 @@ const Navbar = ({ style = {}, visible = true }) => {
                         aria-label='Notifications'
                     >
                         <BiBell
-                            size={26}
-                            color='#aaa'
+                            size={20}
+                            color='#fff'
                         />
                     </button>
                 </div>
@@ -611,9 +615,10 @@ const mobileStyles = {
         boxShadow: "0 2px 18px rgba(0, 0, 0, 0.22)",
         display: "flex",
         alignItems: "center",
-        height: 60,
-        padding: "0 1rem",
+        height: 56,
+        padding: "0 0.75rem",
         justifyContent: "space-between",
+        overflow: "visible",
     },
     left: {
         flex: 1,
@@ -634,7 +639,7 @@ const mobileStyles = {
     },
     brand: {
         color: "#ff4444",
-        fontSize: "1.5rem",
+        fontSize: "1.2rem",
         fontWeight: "bold",
         textDecoration: "none",
         flexShrink: 0,
