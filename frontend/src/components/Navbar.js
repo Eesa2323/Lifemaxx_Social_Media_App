@@ -174,6 +174,7 @@ const Navbar = ({ style = {}, visible = true }) => {
                         />
 
                         <div
+                            className='sidebar-item'
                             onClick={() => {
                                 setOpenModal("")
                                 navigate("/chats")
@@ -183,9 +184,10 @@ const Navbar = ({ style = {}, visible = true }) => {
                             <span className='icon-wrapper' style={sidebarStyles.icon}>
                                 <MessagesBadge />
                             </span>
-                            {!collapsed && <span style={sidebarStyles.label}>Messages</span>}
+                            {!collapsed && <span className='label' style={sidebarStyles.label}>Messages</span>}
                         </div>
                         <div
+                            className='sidebar-item'
                             onClick={() => {
                                 if (!token) {
                                     // Show login popup for notifications
@@ -199,9 +201,10 @@ const Navbar = ({ style = {}, visible = true }) => {
                             <span className='icon-wrapper' style={sidebarStyles.icon}>
                                 <BiBell size={21} color='var(--text-muted)' />
                             </span>
-                            {!collapsed && <span style={sidebarStyles.label}>Notifications</span>}
+                            {!collapsed && <span className='label' style={sidebarStyles.label}>Notifications</span>}
                         </div>
                         <div
+                            className='sidebar-item'
                             onClick={() => {
                                 if (!token) {
                                     setOpenModal("login-required")
@@ -212,7 +215,7 @@ const Navbar = ({ style = {}, visible = true }) => {
                             }}
                             style={sidebarStyles.menuItem}
                         >
-                            <span className='icon-wrapper' style={sidebarStyles.icon}>
+                            <span className='avatar-wrapper' style={sidebarStyles.icon}>
                                 <ProfilePic
                                     src={
                                         userData?.profilePic &&

@@ -1,8 +1,8 @@
 const Joi = require("joi")
 const {
     ACCEPTED_CATEGORIES: ACCEPTED_COMMUNITY_CATGEGORIES,
-    ACCEPTED_CATEGORIES,
 } = require("../models/Community")
+const ACCEPTED_CATEGORIES = ACCEPTED_COMMUNITY_CATGEGORIES.filter((category) => category !== "Other")
 
 function validateUserSignup(user) {
     const schema = Joi.object({

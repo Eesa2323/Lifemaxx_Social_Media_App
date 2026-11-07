@@ -31,12 +31,6 @@ const CATEGORIES = [
         icon: "🎯",
     },
     {
-        id: "LooksMaxxing",
-        title: "Looksmaxxing",
-        description: "Optimize your appearance and style",
-        icon: "✨",
-    },
-    {
         id: "Other",
         title: "Other",
         description: "Anything else that doesn't fit",
@@ -44,13 +38,7 @@ const CATEGORIES = [
     },
 ]
 
-// Reorder specifically for the Find Community modal: Looksmaxxing before Self-Improvement
-const SEARCH_CATEGORIES = [
-    CATEGORIES.find((c) => c.id === "Fitness"),
-    CATEGORIES.find((c) => c.id === "Money"),
-    CATEGORIES.find((c) => c.id === "LooksMaxxing"),
-    CATEGORIES.find((c) => c.id === "Self-Improvement"),
-].filter(Boolean)
+const SEARCH_CATEGORIES = CATEGORIES
 
 const Communities = () => {
     const navigate = useNavigate()
@@ -143,19 +131,40 @@ const Communities = () => {
             })
             return res.data
         },
-        onError: (err) => console.log(err),
+        onError: (err) => {
+            console.error("Could not create community:", err)
+            setCreateError(
+                err.response?.data?.error || err.response?.data?.message ||
+                    "Could not create community. Please try again.",
+            )
+        },
 
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
+            await queryClient.cancelQueries({ queryKey: ["communities"] })
             queryClient.setQueryData(["communities"], (prevData) => {
                 return produce(prevData, (draft) => {
-                    if (!prevData) return
+                    if (!draft?.pages?.[0]) return
 
                     const page = draft.pages[0]
-                    page.data.push(data)
+                    page.data.unshift({
+                        ...data,
+                        creator: {
+                            _id: userData._id,
+                            username: userData.username,
+                            profilePic: userData.profilePic,
+                        },
+                        isMember: true,
+                    })
                 })
             })
 
             setIsCreateModalOpen(false)
+            setSelectedCategory(null)
+            setCommunityTitle("")
+            setCommunityDescription("")
+            setCreateError("")
+            queryClient.invalidateQueries({ queryKey: ["communities"] })
+            queryClient.invalidateQueries({ queryKey: ["communitiesSearch"] })
         },
     })
 
@@ -258,6 +267,7 @@ const Communities = () => {
         const description = communityDescription.trim()
         if (!title || !description) return
 
+        setCreateError("")
         createCommunityMutation.mutate({ name: title, description, category: selectedCategory })
 
         // setIsCreating(true)
@@ -485,7 +495,7 @@ const Communities = () => {
                                 </div>
                                 <h3 style={styles.emptyStateTitle}>No communities yet</h3>
                                 <p style={styles.emptyStateDescription}>
-                                    You haven't joined any communities yet.
+                                    You haven't joined any communities yet. Click Find Communities to discover them.
                                 </p>
                             </div>
                         ) : (
@@ -514,6 +524,9 @@ const Communities = () => {
                                                         }
                                                     </span>
                                                 </div>
+                                                <p style={styles.communityDescription}>
+                                                    {community.description}
+                                                </p>
                                                 <div style={styles.communityInfo}>
                                                     <span>
                                                         {community.memberCount}{" "}
@@ -584,6 +597,7 @@ const Communities = () => {
                     setIsCreateModalOpen(false)
                     setSelectedCategory(null)
                     setCommunityTitle("")
+                    setCommunityDescription("")
                     setIsPrivate(false)
                     setCreateError("")
                 }}
@@ -666,7 +680,8 @@ const Communities = () => {
                             disabled={
                                 !selectedCategory ||
                                 !communityTitle.trim() ||
-                                !communityDescription.trim()
+                                !communityDescription.trim() ||
+                                createCommunityMutation.isPending
                             }
                         >
                             Create Community
@@ -828,6 +843,9 @@ const Communities = () => {
                                                 }
                                             </span>
                                         </div>
+                                        <p style={styles.communityDescription}>
+                                            {community.description}
+                                        </p>
                                         <div style={styles.communityInfo}>
                                             <span>{community.memberCount} members</span>
                                         </div>
@@ -1165,6 +1183,12 @@ const styles = {
         color: "#fff",
         fontSize: "1.1rem",
         margin: 0,
+    },
+    communityDescription: {
+        color: "#bdbdbd",
+        margin: "0 0 0.75rem",
+        overflowWrap: "anywhere",
+        whiteSpace: "pre-wrap",
     },
     categoryBadge: {
         fontSize: "1.2rem",

@@ -164,7 +164,6 @@ const CATEGORY_LIST = [
     { value: "Fitness", label: "Fitness" },
     { value: "Money", label: "Money" },
     { value: "Self-Improvement", label: "Self-Improvement" },
-    { value: "Looksmaxxing", label: "Looksmaxxing" },
 ]
 
 const getSearchPlaceholder = (sort) =>

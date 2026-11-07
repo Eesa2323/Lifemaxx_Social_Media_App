@@ -173,7 +173,7 @@ const JourneyGallery = ({ profileInfo, mode = "profile", searchTerm = "", filter
             {!isProfileLoading ? (
                 <>
                     {profileInfo?.isBlocked ? (
-                        <div style={styles.emptyState}>
+                        <div style={{ ...styles.emptyState, ...styles.profileEmptyState }}>
                             <div style={styles.emptyStateIcon}>
                                 <svg
                                     width='64'
@@ -230,6 +230,7 @@ const JourneyGallery = ({ profileInfo, mode = "profile", searchTerm = "", filter
                                                     })
                                                 }
                                                 layout='columnRightMeta'
+                                                profileTheme
                                                 showImage={true}
                                                 showCreator={true}
                                                 showDate={true}
@@ -243,7 +244,7 @@ const JourneyGallery = ({ profileInfo, mode = "profile", searchTerm = "", filter
                                     journeysData.pages.every(
                                         (page) => !page.data || page.data.length === 0
                                     )) && (
-                                    <div style={styles.emptyState}>
+                                    <div style={{ ...styles.emptyState, ...styles.profileEmptyState }}>
                                         <div style={styles.emptyStateIcon}>
                                             <svg
                                                 width='64'
@@ -404,6 +405,10 @@ const styles = {
         opacity: 0.7,
         "@media (min-width: 768px)": {
             marginBottom: "2rem",
+        },
+        profileEmptyState: {
+            backgroundColor: "var(--surface)",
+            borderColor: "var(--border)",
         },
     },
     emptyStateTitle: {

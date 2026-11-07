@@ -138,7 +138,7 @@ const SearchSidebar = ({ open, onClose, isMobile, left, sidebarWidth }) => {
                         right: left ? undefined : 0,
                         width: isMobile ? "100vw" : 450,
                         height: "100vh",
-                        background: "#000",
+                        background: "var(--surface)",
                         borderRight: left ? "1px solid #333" : undefined,
                         borderLeft: !left ? "1px solid #333" : undefined,
                         zIndex: 2000,

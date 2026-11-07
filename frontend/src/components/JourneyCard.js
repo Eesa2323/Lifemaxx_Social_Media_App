@@ -12,6 +12,7 @@ const JourneyCard = ({
     showDate = true,
     showTags = true,
     layout = "default", // kept for compatibility
+    profileTheme = false,
 }) => {
     const [previewOpen, setPreviewOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
@@ -29,8 +30,8 @@ const JourneyCard = ({
             display: "flex",
             flexDirection: "column",
             borderRadius: 16,
-            backgroundColor: "#1c1c1c",
-            border: "1px solid #333",
+            backgroundColor: profileTheme ? "var(--surface)" : "#1c1c1c",
+            border: profileTheme ? "1px solid var(--border)" : "1px solid #333",
             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
             minHeight: 120,
             width: "100%",
@@ -79,7 +80,7 @@ const JourneyCard = ({
             maxWidth: "100%",
         },
         username: {
-            color: "#fff",
+            color: profileTheme ? "var(--text)" : "#fff",
             fontSize: 14,
             fontWeight: 600,
             maxWidth: 180,
@@ -88,7 +89,7 @@ const JourneyCard = ({
             textOverflow: "ellipsis",
         },
         description: {
-            color: "#aaa",
+            color: profileTheme ? "var(--text-secondary)" : "#aaa",
             fontSize: 14,
         },
         tagsContainer: {
@@ -98,8 +99,8 @@ const JourneyCard = ({
             marginTop: 12,
         },
         tag: {
-            backgroundColor: "#333",
-            color: "#fff",
+            backgroundColor: profileTheme ? "var(--surface-strong)" : "#333",
+            color: profileTheme ? "var(--text)" : "#fff",
             padding: "4px 8px",
             borderRadius: 12,
             fontSize: 12,
@@ -113,7 +114,7 @@ const JourneyCard = ({
         },
         date: {
             fontSize: 12,
-            color: "#888",
+            color: profileTheme ? "var(--text-muted)" : "#888",
             marginRight: 8,
             marginBottom: 4,
         },
@@ -217,6 +218,7 @@ const JourneyCard = ({
                         <h2
                             style={{
                                 marginTop: 20,
+                                color: profileTheme ? "var(--text)" : undefined,
                                 fontSize: 18,
                                 display: "-webkit-box",
                                 WebkitLineClamp: 5,

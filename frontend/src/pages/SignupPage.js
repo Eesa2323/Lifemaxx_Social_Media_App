@@ -133,7 +133,6 @@ const CATEGORIES = [
     { id: "Fitness", title: "Fitness", icon: "💪" },
     { id: "Money", title: "Money", icon: "💼" },
     { id: "Self-Improvement", title: "Self-Improvement", icon: "🎯" },
-    { id: "Looksmaxxing", title: "Looksmaxxing", icon: "✨" },
 ]
 
 const SignupPage = () => {

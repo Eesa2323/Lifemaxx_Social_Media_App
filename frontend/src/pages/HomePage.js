@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useMediaQuery } from "react-responsive"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
@@ -8,9 +8,12 @@ import JourneyPost from "../components/JourneyPost"
 
 import { PostFeedMuteProvider } from "../contexts/PostFeedMuteContext"
 import axios from "../utils/axios"
+import { BASE_URL } from "../utils/config"
+import defaultProfilePic from "../assets/imgs/default_profile_pic2.jpg"
 
 const HomePage = () => {
     const location = useLocation()
+    const navigate = useNavigate()
     const isNewSignup = location.state?.isNewSignup || false
 
     const isMobile = useMediaQuery({ maxWidth: 768 })
@@ -203,19 +206,19 @@ const HomePage = () => {
                                         key={u._id}
                                         className='home-trending-item'
                                         style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px', borderRadius: '8px', cursor: 'pointer', border: '1px solid var(--border)' }}
-                                        onClick={() => window.location.href = `/profile/${u.username}`}
+                                        onClick={() => navigate(`/profile/${u.username}`)}
                                     >
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
-                                            {u.profilePic ? (
-                                                <img
-                                                    src={`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/uploads/profilePics/${u.profilePic}`}
-                                                    alt={u.username}
-                                                    className='home-trending-avatar'
-                                                    style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
-                                                />
-                                            ) : (
-                                                <div className='home-trending-avatar-placeholder' style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--surface-strong)' }} />
-                                            )}
+                                            <img
+                                                src={u.profilePic ? `${BASE_URL}/uploads/profilePics/${u.profilePic}` : defaultProfilePic}
+                                                alt={`${u.username}'s profile`}
+                                                className='home-trending-avatar'
+                                                onError={(event) => {
+                                                    event.currentTarget.onerror = null
+                                                    event.currentTarget.src = defaultProfilePic
+                                                }}
+                                                style={{ width: '32px', height: '32px', flexShrink: 0, borderRadius: '50%', objectFit: 'cover' }}
+                                            />
                                             <span className='home-trending-username' style={{ fontSize: '0.9rem' }}>{u.username}</span>
                                         </div>
                                     </div>

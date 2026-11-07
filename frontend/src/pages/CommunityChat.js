@@ -546,16 +546,12 @@ const CommunityChat = () => {
         const el = descRef.current
         if (!el) return
         const checkOverflow = () => {
-            // allow layout to settle
-            setTimeout(() => {
-                if (!el) return
-                setDescOverflowing(el.scrollHeight > el.clientHeight + 1)
-            }, 0)
+            setDescOverflowing(el.scrollHeight > el.clientHeight + 1)
         }
         checkOverflow()
         window.addEventListener("resize", checkOverflow)
         return () => window.removeEventListener("resize", checkOverflow)
-    }, [community?.description, descExpanded])
+    }, [community?.description, descExpanded, isFetching])
 
     useEffect(() => {
         const resetState = () => {
@@ -911,66 +907,17 @@ const CommunityChat = () => {
                                 <div style={{ position: "relative" }}>
                                     {!descExpanded ? (
                                         <div
+                                            ref={descRef}
                                             style={{
                                                 ...styles.postDescriptionCollapsed,
-                                                cursor: "pointer",
                                             }}
-                                            aria-expanded={false}
-                                            onClick={() => setDescExpanded(true)}
-                                            title='Show more'
                                         >
-                                            {/* {community.description} */}
-                                            Velit mollit id consequat commodo. Commodo proident
-                                            cupidatat nisi pariatur officia elit aliquip cupidatat
-                                            laboris. Cillum laborum voluptate in sunt dolore laborum
-                                            ut. Elit quis veniam anim reprehenderit aute mollit.
-                                            Velit mollit Velit mollit id consequat commodo. Commodo
-                                            proident cupidatat nisi pariatur officia elit aliquip
-                                            cupidatat laboris. Cillum laborum voluptate in sunt
-                                            dolore laborum ut. Elit quis veniam anim reprehenderit
-                                            aute mollit. id consequat commodo. Commodo proident
-                                            cupidatat nisi pariatur officia elit aliquip cupidatat
-                                            laboris. Cillum laborum voluptate in sunt dolore laborum
-                                            ut. Elit quis veniam anim reprehenderit aute mollit.
-                                            Velit mollit id consequat commodo. Commodo proident
-                                            cupidatat nisi pariatur officia elit aliquip cupidatat
-                                            laboris. Cillum laborum voluptate in sunt dolore laborum
-                                            ut. Elit quis veniam anim reprehenderit aute mollit.
-                                            {/* <span
-                                                aria-hidden
-                                                style={{
-                                                    position: "absolute",
-                                                    right: 8,
-                                                    bottom: 6,
-                                                    color: "#bbb",
-                                                    fontSize: 16,
-                                                }}
-                                            >
-                                                ...
-                                            </span> */}
+                                            {community.description}
                                         </div>
                                     ) : (
                                         <div>
                                             <p style={styles.postDescription}>
-                                                {/* {community.description} */}
-                                                Velit mollit id consequat commodo. Commodo proident
-                                                cupidatat nisi pariatur officia elit aliquip
-                                                cupidatat laboris. Cillum laborum voluptate in sunt
-                                                dolore laborum ut. Elit quis veniam anim
-                                                reprehenderit aute mollit. Velit mollit Velit mollit
-                                                id consequat commodo. Commodo proident cupidatat
-                                                nisi pariatur officia elit aliquip cupidatat
-                                                laboris. Cillum laborum voluptate in sunt dolore
-                                                laborum ut. Elit quis veniam anim reprehenderit aute
-                                                mollit. id consequat commodo. Commodo proident
-                                                cupidatat nisi pariatur officia elit aliquip
-                                                cupidatat laboris. Cillum laborum voluptate in sunt
-                                                dolore laborum ut. Elit quis veniam anim
-                                                reprehenderit aute mollit. Velit mollit id consequat
-                                                commodo. Commodo proident cupidatat nisi pariatur
-                                                officia elit aliquip cupidatat laboris. Cillum
-                                                laborum voluptate in sunt dolore laborum ut. Elit
-                                                quis veniam anim reprehenderit aute mollit.
+                                                {community.description}
                                             </p>
                                             <button
                                                 onClick={() => setDescExpanded(false)}
@@ -981,6 +928,15 @@ const CommunityChat = () => {
                                                 Show less
                                             </button>
                                         </div>
+                                    )}
+                                    {!descExpanded && descOverflowing && (
+                                        <button
+                                            onClick={() => setDescExpanded(true)}
+                                            aria-expanded={false}
+                                            style={styles.showLessBtn}
+                                        >
+                                            Show more
+                                        </button>
                                     )}
                                 </div>
                             )}

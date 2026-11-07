@@ -1395,7 +1395,7 @@ const styles = {
     journeysTabContainer: {
         display: "flex",
         justifyContent: "center",
-        borderBottom: "1px solid #262626",
+        borderBottom: "1px solid var(--border)",
         marginBottom: 16,
     },
     journeysTab: {
@@ -1403,9 +1403,9 @@ const styles = {
         alignItems: "center",
         gap: 8,
         padding: "0 8px 12px 0",
-        borderBottom: "1px solid #fff",
+        borderBottom: "1px solid var(--primary)",
         marginBottom: -1,
-        color: "#fff",
+        color: "var(--text)",
     },
     journeysTabText: {
         fontSize: "12px",

@@ -169,7 +169,7 @@ const NotificationSidebar = ({ open, onClose, isMobile, left, sidebarWidth }) =>
                 right: left ? undefined : 0,
                 width: isMobile ? "100vw" : 450,
                 height: "100vh",
-                background: "#000",
+                background: "var(--surface)",
                 borderRight: left ? "1px solid #333" : undefined,
                 borderLeft: !left ? "1px solid #333" : undefined,
                 zIndex: 2000,
@@ -203,7 +203,7 @@ const NotificationSidebar = ({ open, onClose, isMobile, left, sidebarWidth }) =>
                     <BiX size={28} />
                 </button>
             </div>
-            <div style={{ flex: 1, overflowY: "auto", padding: 20, background: "#000" }}>
+            <div style={{ flex: 1, overflowY: "auto", padding: 20, background: "var(--surface)" }}>
                 {data?.pages?.map((page, pageIndex) => {
                     const list = activeTab === 0 ? page?.notifications : page?.requests
                     return (

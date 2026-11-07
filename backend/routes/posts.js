@@ -588,20 +588,21 @@ router.delete("/comment/:id", [auth], async (req, res) => {
         await CommentLike.deleteMany({ comment: id })
 
         // Delete all replies to this comment
-        await Comment.deleteMany({ replyTo: id })
+        const deletedReplies = await Comment.deleteMany({ replyTo: id })
 
         // Delete the comment
         await Comment.findByIdAndDelete(id)
 
         // Update post comment count
-        await Post.updateOne({ _id: comment.post }, { $inc: { commentCount: -1 } })
+        const deletedCount = 1 + deletedReplies.deletedCount
+        await Post.updateOne({ _id: comment.post }, { $inc: { commentCount: -deletedCount } })
 
         // If this was a reply, update parent comment reply count
         if (comment.replyTo) {
             await Comment.updateOne({ _id: comment.replyTo }, { $inc: { replyCount: -1 } })
         }
 
-        res.send({ message: "Comment deleted successfully" })
+        res.send({ message: "Comment deleted successfully", deletedCount })
     } catch (error) {
         console.error(error)
         res.status(500).send({ message: "Server error" })

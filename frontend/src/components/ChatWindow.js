@@ -39,7 +39,7 @@ import Preview from "./Preview"
 import ProfilePic from "./ProfilePic"
 import ChatSettings from "./ChatSettings"
 import { useNavigate } from "react-router-dom"
-import { MdArrowBackIos as BackIcon } from "react-icons/md"
+import { MdArrowBackIos as BackIcon, MdOutlineChatBubbleOutline } from "react-icons/md"
 
 const ChatWindow = ({ chats, isMobile, selectedChatData, updateSelectedChatData }) => {
     const userId = useSelector((state) => state.auth.userData?._id)
@@ -734,13 +734,38 @@ const ChatWindow = ({ chats, isMobile, selectedChatData, updateSelectedChatData 
             )}
         </div>
     ) : (
-        <>
-            <span>Select a selectedChat</span>
-        </>
+        <div style={styles.emptyState}>
+            <MdOutlineChatBubbleOutline size={40} aria-hidden='true' />
+            <h2 style={styles.emptyStateTitle}>Your conversations</h2>
+            <p style={styles.emptyStateDescription}>
+                Select a conversation or start a new one to begin messaging.
+            </p>
+        </div>
     )
 }
 
 const styles = {
+    emptyState: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        flex: 1,
+        width: "100%",
+        padding: "32px",
+        textAlign: "center",
+        color: "var(--text-muted)",
+    },
+    emptyStateTitle: {
+        margin: "16px 0 8px",
+        fontSize: 20,
+        color: "var(--text)",
+    },
+    emptyStateDescription: {
+        margin: 0,
+        maxWidth: 320,
+        lineHeight: 1.5,
+    },
     chatWindowContainer: {
         display: "flex",
         flexDirection: "column",

@@ -13,6 +13,7 @@ import ThreeDotsMenu from "./ThreeDotsMenu"
 import { useSelector } from "react-redux"
 import useAxiosPrivate from "../hooks/useAxiosPrivate"
 import { BASE_URL } from "../utils/config"
+import { updatePostCommentCount } from "../utils/postCommentCount"
 
 const getStyles = () => ({
     commentContainer: {
@@ -94,7 +95,8 @@ const Comment = ({ c, updateReply, updatePending, pending, postId, isMember, sor
             const response = await axiosPrivate.delete(`${BASE_URL}/api/posts/comment/${c._id}`)
             return response.data
         },
-        onSuccess: () => {
+        onSuccess: async (data) => {
+            await updatePostCommentCount(queryClient, postId, -(data.deletedCount ?? 1))
             // Invalidate queries to refresh the comments list
             const cacheKey = c.replyTo ? ["replyComments", c.replyTo] : ["comments", postId, sortBy]
             queryClient.invalidateQueries({ queryKey: cacheKey })

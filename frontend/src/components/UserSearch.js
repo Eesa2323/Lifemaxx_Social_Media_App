@@ -47,11 +47,11 @@ const UserSearch = ({
     }
 
     return (
-        <div style={styles.container}>
+        <div style={{ ...styles.container, ...(isSearchModal && styles.sidebarSurface) }}>
             <input
                 onChange={handleInputChange}
                 placeholder='Search users...'
-                style={styles.inputStyle}
+                style={{ ...styles.inputStyle, ...(isSearchModal && styles.sidebarInput) }}
             />
 
             {isFetching ? (
@@ -63,7 +63,7 @@ const UserSearch = ({
                     />
                 </div>
             ) : (
-                <div style={styles.userListContainer}>
+                <div style={{ ...styles.userListContainer, ...(isSearchModal && styles.sidebarSurface) }}>
                     {displayRecentList && recentSearchers?.length > 0 && (
                         <div style={styles.recentSection}>
                             <div style={styles.recentHeader}>
@@ -82,6 +82,7 @@ const UserSearch = ({
                                 isRecentList={true}
                                 onRemoveUser={onRemoveRecent}
                                 provideUserProfileInfo={false}
+                                isSearchModal={isSearchModal}
                             />
                         </div>
                     )}
@@ -96,6 +97,7 @@ const UserSearch = ({
                                     handleClick={handleClick}
                                     selectedUsers={selectedUsers}
                                     users={users}
+                                    isSearchModal={isSearchModal}
                                 />
                             )}
                         </>
@@ -114,6 +116,7 @@ export const UserList = ({
     isRecentList = false,
     onRemoveUser = null,
     provideUserProfileInfo = true,
+    isSearchModal = false,
 }) => {
     return users?.map((user) => {
         const shouldShowSelectButton = !!selectedUsers
@@ -127,6 +130,7 @@ export const UserList = ({
                 key={user._id}
                 style={{
                     ...styles.userItem,
+                    ...(isSearchModal && styles.sidebarUserItem),
                     ...(shouldShowSelectButton && { maxWidth: "100%" }),
                 }}
             >
@@ -203,6 +207,18 @@ const styles = {
         width: "100%",
         height: "100%",
         backgroundColor: "black",
+    },
+    sidebarSurface: {
+        backgroundColor: "var(--surface)",
+    },
+    sidebarInput: {
+        backgroundColor: "var(--surface-strong)",
+        borderColor: "var(--border)",
+        color: "var(--text)",
+    },
+    sidebarUserItem: {
+        backgroundColor: "var(--surface-soft)",
+        color: "var(--text)",
     },
     modalBody: {
         backgroundColor: "black",

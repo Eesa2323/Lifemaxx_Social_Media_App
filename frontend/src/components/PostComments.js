@@ -23,6 +23,7 @@ import Comment from "./Comment"
 import MentionText from "./MentionText"
 import useMentionAutocomplete from "../hooks/useMentionAutocomplete"
 import MentionAutocomplete from "./MentionAutocomplete"
+import { updatePostCommentCount } from "../utils/postCommentCount"
 
 const getStyles = (isMobile) => ({
     container: {
@@ -262,6 +263,7 @@ const PostComments = ({
     autoOpenComments = false,
 }) => {
     const [comment, setComment] = useState("")
+    const [commentError, setCommentError] = useState("")
     const [isOpen, setIsOpen] = useState(autoOpenComments)
 
     // Update isOpen state when autoOpenComments prop changes
@@ -277,6 +279,8 @@ const PostComments = ({
     const [pendingNextPageFetches, setPendingNextPageFetches] = useState([])
     const isMobile = useMediaQuery({ maxWidth: 768 })
     const [replyData, setReplyData] = useState(null)
+    const replyDataRef = useRef(replyData)
+    replyDataRef.current = replyData
     const styles = getStyles(isMobile)
     const axiosPrivate = useAxiosPrivate()
     const queryClient = useQueryClient()
@@ -408,22 +412,20 @@ const PostComments = ({
                 })
             }
 
-            setReplyData(null)
-            setComment("")
-
             return {
                 pendingComment,
                 cacheKey,
                 replyTo,
             }
         },
-        onSuccess: (data, _, context) => {
-            const { pendingComment, cacheKey, replyTo } = context
+        onSuccess: async (data, variables, context) => {
+            const { pendingComment, cacheKey } = context
             const { comment } = data
 
             queryClient.setQueryData(cacheKey, (prevData) => {
                 return produce(prevData, (draft) => {
-                    const page = draft.pages[0]
+                    const page = draft?.pages?.[0]
+                    if (!page) return
                     const pendingIndex = page.data.findIndex((c) => c._id === pendingComment._id)
                     if (pendingIndex === -1) return
 
@@ -432,7 +434,42 @@ const PostComments = ({
                 })
             })
 
-            // updatePostPropertyCount(post._id, postFeedPageIndex, "commentCount", 1)
+            await updatePostCommentCount(queryClient, post._id, 1)
+
+            if (
+                inputRef.current?.value === variables.content &&
+                (replyDataRef.current?.replyTo || replyDataRef.current?._id) === variables.replyTo
+            ) {
+                setComment("")
+                setReplyData(null)
+                closeMentionPopup()
+            }
+        },
+        onError: (error, variables, context) => {
+            console.error("Error posting comment:", error)
+            setCommentError("Could not post your comment. Please try again.")
+            if (!context) return
+
+            queryClient.setQueryData(context.cacheKey, (old) => {
+                if (!old) return old
+                return {
+                    ...old,
+                    pages: old.pages.map((page) => ({
+                        ...page,
+                        data: page.data.filter((item) => item._id !== context.pendingComment._id),
+                    })),
+                }
+            })
+            if (context.replyTo) {
+                queryClient.setQueryData(["comments", post._id, sortBy], (old) => {
+                    if (!old) return old
+                    return produce(old, (draft) => {
+                        const parent = draft.pages.flatMap((page) => page.data)
+                            .find((item) => item._id === context.replyTo)
+                        if (parent) parent.replyCount = Math.max((parent.replyCount || 0) - 1, 0)
+                    })
+                })
+            }
         },
     })
 
@@ -490,6 +527,7 @@ const PostComments = ({
             return
         }
 
+        setCommentError("")
         addComment.mutate({
             content: comment,
             replyTo: replyData?.replyTo || replyData?._id,
@@ -582,6 +620,11 @@ const PostComments = ({
                     </div>
 
                     <div style={styles.footer}>
+                        {commentError && (
+                            <div role='alert' style={{ color: "#ff6666", marginBottom: 8 }}>
+                                {commentError}
+                            </div>
+                        )}
                         {replyData && (
                             <div style={styles.replyPreview}>
                                 <div style={styles.replyPreviewContent}>

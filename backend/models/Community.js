@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const ACCEPTED_CATEGORIES = ["LooksMaxxing", "Fitness", "Money", "Self-Improvement"]
+const ACCEPTED_CATEGORIES = ["LooksMaxxing", "Fitness", "Money", "Self-Improvement", "Other"]
 
 const commununitySchema = new mongoose.Schema(
     {
