@@ -70,7 +70,7 @@ const JourneyCard = ({
             marginLeft: 12,
             marginTop: 5,
             flexShrink: 0,
-            minWidth: 140,
+            minWidth: isMobile ? 0 : 140,
             maxWidth: 240,
         },
         userHeaderRow: {
@@ -288,7 +288,7 @@ const JourneyCard = ({
                     <div
                         style={{
                             ...styles.userCol,
-                            maxWidth: isMobile ? 200 : styles.userCol.maxWidth,
+                            maxWidth: isMobile ? "42%" : styles.userCol.maxWidth,
                         }}
                     >
                         {(() => {
@@ -320,7 +320,7 @@ const JourneyCard = ({
                                         style={{
                                             ...styles.username,
                                             marginTop: 7,
-                                            maxWidth: isMobile ? 170 : 240,
+                                            maxWidth: isMobile ? "100%" : 240,
                                         }}
                                         title={username}
                                     >

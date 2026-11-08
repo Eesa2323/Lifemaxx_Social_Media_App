@@ -479,11 +479,14 @@ const ChatWindow = ({ chats, isMobile, selectedChatData, updateSelectedChatData 
                     )} */}
 
                     {isMobile && (
-                        <BackIcon
+                        <button
+                            type='button'
+                            aria-label='Back to conversations'
                             onClick={() => updateSelectedChatData(null)}
-                            style={{ marginTop: 4, marginLeft: 23 }}
-                            size={22}
-                        />
+                            style={{ marginTop: 4, marginLeft: 12, flexShrink: 0, cursor: "pointer", background: "none", border: 0, color: "var(--text)", padding: 0 }}
+                        >
+                            <BackIcon size={22} />
+                        </button>
                     )}
 
                     {/* Profile Picture */}
@@ -496,7 +499,7 @@ const ChatWindow = ({ chats, isMobile, selectedChatData, updateSelectedChatData 
                                   selectedChat?.chatPicture &&
                                   `${BASE_URL}/uploads/profilePics/${selectedChat.chatPicture}`
                         }
-                        style={{ marginLeft: isMobile ? 30 : 40, marginTop: 10 }}
+                        style={{ marginLeft: isMobile ? 12 : 40, marginTop: 10 }}
                     />
 
                     <span style={styles.topbarUsersText}>{chatUsernames}</span>
@@ -506,7 +509,7 @@ const ChatWindow = ({ chats, isMobile, selectedChatData, updateSelectedChatData 
 
             <div
                 ref={endRef}
-                style={styles.messageListContainer}
+                style={{ ...styles.messageListContainer, ...(isMobile && { padding: "20px 12px" }) }}
             >
                 <div
                     style={{ position: "relative" }}
@@ -578,7 +581,7 @@ const ChatWindow = ({ chats, isMobile, selectedChatData, updateSelectedChatData 
                 </div>
             </div>
 
-            <div style={styles.inputWrapper}>
+            <div style={{ ...styles.inputWrapper, ...(isMobile && { padding: "0 12px", marginBottom: 8 }) }}>
                 {/* Reply box above input */}
                 {reply && (
                     <Reply
@@ -770,7 +773,9 @@ const styles = {
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        height: "100vh",
+        height: "100%",
+        minHeight: 0,
+        minWidth: 0,
     },
     iconsContainer: {
         paddingLeft: 20,
@@ -801,6 +806,7 @@ const styles = {
     },
     inputStyle: {
         width: "100%",
+        minWidth: 0,
         textIndent: 20,
         height: "42px",
         color: "white",
@@ -824,9 +830,14 @@ const styles = {
     topbarUsersText: {
         marginLeft: 15,
         marginTop: 2,
+        minWidth: 0,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
     },
     messageListContainer: {
         flexGrow: 1,
+        minHeight: 0,
         display: "flex",
         padding: "35px 35px 35px 20px",
         flexDirection: "column-reverse",

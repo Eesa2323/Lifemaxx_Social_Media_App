@@ -52,18 +52,18 @@ const Layout = ({ children }) => {
 
     // For mobile, show navbar at top and content below
     if (isMobile) {
-        return location.pathname !== "/chats" ? (
+        return (
             <div className='app-shell mobile-shell'>
                 <Navbar />
                 <main
                     className='page-container'
-                    style={{ paddingTop: "80px" }}
+                    style={location.pathname === "/chats"
+                        ? { padding: "56px 0 60px", minHeight: "100dvh" }
+                        : { paddingTop: "80px", paddingBottom: "76px" }}
                 >
                     {children}
                 </main>
             </div>
-        ) : (
-            <div className='app-shell mobile-shell'>{children}</div>
         )
     }
 

@@ -2,9 +2,6 @@ import { useState, useEffect } from "react"
 import { Outlet, useLocation, useNavigate, useNavigationType } from "react-router-dom"
 import { useSelector } from "react-redux"
 import useRefresh from "../hooks/useRefresh"
-import Navbar from "./Navbar"
-
-const NAVBAR_BLACKLIST = ["/login", "/signup", "/chats"]
 
 const PersistLogin = () => {
     const token = useSelector((state) => state.auth.token)
@@ -13,8 +10,6 @@ const PersistLogin = () => {
     const location = useLocation()
     const navigate = useNavigate()
     const pathname = location.pathname
-    const startPath = "/" + pathname.split("/")[1]
-    const shouldDisplayNavbar = !NAVBAR_BLACKLIST.includes(startPath)
     const navType = useNavigationType()
 
     useEffect(() => {
@@ -85,13 +80,7 @@ const PersistLogin = () => {
         return null
     }
 
-    return (
-        <>
-            {shouldDisplayNavbar && <Navbar />}
-
-            <Outlet />
-        </>
-    )
+    return <Outlet />
 }
 
 export default PersistLogin

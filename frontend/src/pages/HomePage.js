@@ -5,6 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
 
 import JourneyPost from "../components/JourneyPost"
+import Spinner from "../components/Spinner"
 
 import { PostFeedMuteProvider } from "../contexts/PostFeedMuteContext"
 import axios from "../utils/axios"
@@ -137,13 +138,6 @@ const HomePage = () => {
         }
     }, [data])
 
-    // Update profile
-    const SkeletonPost = () => (
-        <div style={{ padding: 16, color: "#666", textAlign: "center" }}>Loading...</div>
-    )
-
-    const Spinner = () => <div style={{ textAlign: "center", padding: 12 }}>Loading more...</div>
-
     return (
         <div className='page-wrapper home-page'>
             <div className='home-page-top'>
@@ -154,11 +148,9 @@ const HomePage = () => {
                     <PostFeedMuteProvider>
                         <div className='feed-column'>
                             {(isLoading || status === "pending") && (
-                                <>
-                                    <SkeletonPost />
-                                    <SkeletonPost />
-                                    <SkeletonPost />
-                                </>
+                                <div role='status' aria-label='Loading posts' style={{ display: "flex", justifyContent: "center", padding: 32 }}>
+                                    <Spinner noDelay size={30} withStyles={false} />
+                                </div>
                             )}
 
                             {!isLoading &&
@@ -192,7 +184,11 @@ const HomePage = () => {
                                     }),
                                 )}
 
-                            {isFetchingNextPage && <Spinner />}
+                            {isFetchingNextPage && (
+                                <div role='status' aria-label='Loading more posts' style={{ display: "flex", justifyContent: "center", padding: 16 }}>
+                                    <Spinner noDelay size={24} withStyles={false} />
+                                </div>
+                            )}
                         </div>
                     </PostFeedMuteProvider>
                 </main>

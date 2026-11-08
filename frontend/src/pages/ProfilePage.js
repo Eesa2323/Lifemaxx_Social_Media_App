@@ -234,7 +234,7 @@ const ProfilePageComponent = () => {
 
     return (
         <div className='page-wrapper profile-page'>
-            <div style={styles.profileContainer}>
+            <div style={{ ...styles.profileContainer, ...(isMobile && { padding: "0 8px", width: "100%" }) }}>
                 {profileInfo && (
                     <div style={styles.profileContent}>
                         {isMobile ? (
@@ -325,6 +325,8 @@ const ProfilePageComponent = () => {
                                         display: "flex",
                                         gap: 8,
                                         marginBottom: 12,
+                                        flexWrap: "wrap",
+                                        alignItems: "center",
                                     }}
                                 >
                                     {isOwnProfile ? (
@@ -332,7 +334,10 @@ const ProfilePageComponent = () => {
                                             <SubmitButton
                                                 onClick={() => setIsCreateModalOpen(true)}
                                                 style={{
-                                                    width: 350,
+                                                    flex: "1 1 120px",
+                                                    width: "auto",
+                                                    minWidth: 0,
+                                                    padding: "6px 10px",
                                                     height: 32,
                                                     backgroundColor: "var(--darkGrey)",
 
@@ -346,7 +351,10 @@ const ProfilePageComponent = () => {
                                                 trigger={
                                                     <SubmitButton
                                                         style={{
-                                                            width: 350,
+                                                            flex: "1 1 120px",
+                                                            width: "auto",
+                                                            minWidth: 0,
+                                                            padding: "6px 10px",
                                                             height: 32,
                                                             backgroundColor: "var(--darkGrey)",
                                                             color: "#fff",
@@ -401,6 +409,9 @@ const ProfilePageComponent = () => {
                                                 isDisabled={followMutation.isPending}
                                                 style={{
                                                     ...styles.desktopFollowButton,
+                                                    flex: "1 1 120px",
+                                                    width: "auto",
+                                                    minWidth: 0,
                                                     ...(profileInfo.isFollowing ||
                                                     profileInfo.isRequested
                                                         ? { backgroundColor: "var(--darkGrey)" }
@@ -437,6 +448,9 @@ const ProfilePageComponent = () => {
                                                 }}
                                                 style={{
                                                     ...styles.desktopFollowButton,
+                                                    flex: "1 1 120px",
+                                                    width: "auto",
+                                                    minWidth: 0,
                                                 }}
                                             >
                                                 Message
@@ -1119,6 +1133,7 @@ const styles = {
         fontWeight: 600,
         margin: 0,
         color: "#fff",
+        overflowWrap: "anywhere",
     },
     mobileActionButtons: {
         display: "flex",
@@ -1228,6 +1243,7 @@ const styles = {
         lineHeight: 1.4,
         color: "#fff",
         marginBottom: 10,
+        overflowWrap: "anywhere",
     },
     noBioText: {
         fontStyle: "italic",

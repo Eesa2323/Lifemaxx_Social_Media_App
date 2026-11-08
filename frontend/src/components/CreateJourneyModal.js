@@ -141,6 +141,13 @@ const CreateJourneyModal = ({ isOpen, onClose, userId }) => {
                     <span style={{ display: "inline-block", marginTop: 7, marginBottom: 7 }}>
                         Create Journey
                     </span>
+                    <IconButton
+                        aria-label='close'
+                        onClick={onClose}
+                        style={{ position: "absolute", right: 8, top: 8, color: "#fff" }}
+                    >
+                        ×
+                    </IconButton>
                 </DialogTitle>
                 <DialogContent>
                     <form

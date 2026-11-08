@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react"
-import { BASE_URL, SMALL_SCREEN_SIZE } from "../utils/config"
+import { BASE_URL } from "../utils/config"
 import { useMediaQuery } from "react-responsive"
 import useChats from "../hooks/chats/useChats"
 import CreateChat from "../components/CreateChat"
@@ -18,7 +18,7 @@ const Chats = () => {
     const userId = useSelector((state) => state.auth.userData?._id)
     const token = useSelector((state) => state.auth.token)
     const { fetchChats, useUnreadChatsQuery } = useChats()
-    const isMobile = useMediaQuery({ maxWidth: SMALL_SCREEN_SIZE })
+    const isMobile = useMediaQuery({ maxWidth: 768 })
     const [showLoginModal, setShowLoginModal] = useState(false)
     const location = useLocation()
     const inquiredUser = location.state?.targetUserInfo
@@ -26,12 +26,11 @@ const Chats = () => {
         useContext(ChatContext)
     const navigate = useNavigate()
 
-    const displayChatWindow = isMobile
-        ? selectedChatData?.privateChatKey || selectedChatData?.chatId
-        : true
-    const displayNavbar = isMobile
-        ? !selectedChatData?.privateChatKey && !selectedChatData?.chatId
-        : true
+    const hasSelectedChat = !!(
+        selectedChatData?.chatId || selectedChatData?.privateChatKey || selectedChatData?.newChatData
+    )
+    const displayChatWindow = !isMobile || hasSelectedChat
+    const displayNavbar = !isMobile || !hasSelectedChat
 
     // const { isLoading: isLoadingChatCount } = useUnreadChatsQuery()
     const { data, isFetching } = useQuery({
@@ -84,7 +83,7 @@ const Chats = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100vh",
+                    height: isMobile ? "calc(100dvh - 116px)" : "100vh",
                     flexDirection: "column",
                     gap: "20px",
                 }}
@@ -103,10 +102,10 @@ const Chats = () => {
 
     return (
         <div className='page-wrapper chats-page' style={{ padding: isMobile ? 0 : undefined, maxWidth: '100%' }}>
-            <div className='chat-layout' style={isMobile ? { height: 'calc(100vh - 56px)', marginTop: '56px', width: '100vw', maxWidth: '100vw' } : { height: 'calc(100vh - 80px)' }}>
+            <div className='chat-layout' style={isMobile ? { height: 'calc(100dvh - 116px)', minHeight: 0, width: '100%' } : { height: 'calc(100vh - 80px)' }}>
                 {displayNavbar && (
-                    <aside className='chat-sidebar-panel' style={isMobile ? { width: '100%', maxWidth: '100%', height: '100%', borderRadius: 0, border: 'none' } : {}}>
-                        <div style={styles.headerContainer}>
+                    <aside className='chat-sidebar-panel' style={isMobile ? { width: '100%', maxWidth: '100%', maxHeight: 'none', height: '100%', minHeight: 0, borderRadius: 0, border: 'none', display: 'flex', flexDirection: 'column' } : {}}>
+                        <div style={{ ...styles.headerContainer, ...(isMobile && { marginTop: 0, padding: "8px 0", gap: 12 }) }}>
                             {isMobile && (
                                 <BackIcon
                                     onClick={() => navigate(-1)}
@@ -207,6 +206,7 @@ const Chats = () => {
                                                 display: "flex",
                                                 gap: 13,
                                                 minWidth: 0, // Allow flex container to shrink
+                                                flex: 1,
                                             }}
                                         >
                                             <ProfilePic
@@ -275,8 +275,8 @@ const Chats = () => {
                 )}
 
                 {displayChatWindow && (
-                    <main className='chat-main-panel' style={isMobile ? { width: '100vw', maxWidth: '100vw', height: 'calc(100vh - 56px)', marginTop: '56px', borderRadius: 0, border: 'none' } : {}}>
-                        <div className='chat-header-panel'>
+                    <main className='chat-main-panel' style={isMobile ? { width: '100%', height: '100%', minHeight: 0, padding: 0, borderRadius: 0, border: 'none' } : {}}>
+                        {!isMobile && <div className='chat-header-panel'>
                             <div>
                                 <span
                                     className='page-title'
@@ -291,7 +291,7 @@ const Chats = () => {
                                     Smart, spacious messaging with cleaner focus.
                                 </p>
                             </div>
-                        </div>
+                        </div>}
                         <div style={styles.chatWindowWrapper}>
                             <ChatWindow
                                 isMobile={isMobile}
@@ -341,8 +341,10 @@ const Chats = () => {
             padding: "8px 18px",
         },
         chatWindowWrapper: {
-            flexGrow: 1,
-            height: "100%",
+            display: "flex",
+            flex: 1,
+            minHeight: 0,
+            minWidth: 0,
         },
         headingText: {
             fontSize: 20,

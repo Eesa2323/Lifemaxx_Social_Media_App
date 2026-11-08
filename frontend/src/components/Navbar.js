@@ -28,6 +28,7 @@ import UnauthorizedLoginPopupModal from "./UnauthorizedLoginPopupModal"
 import { useSidebar } from "../contexts/SidebarContext"
 import { RiUserCommunityFill as CommunityIcon } from "react-icons/ri"
 import { FaNetworkWired as ConnectIcon } from "react-icons/fa"
+import CreateJourneyModal from "./CreateJourneyModal"
 
 const Navbar = ({ style = {}, visible = true }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -172,6 +173,25 @@ const Navbar = ({ style = {}, visible = true }) => {
                             to='/discover'
                             onClick={() => setOpenModal("")}
                         />
+                        <div
+                            className='sidebar-item'
+                            role='button'
+                            tabIndex={0}
+                            aria-label='Create Journey'
+                            onClick={() => setOpenModal(token ? "create-journey" : "login-required")}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault()
+                                    setOpenModal(token ? "create-journey" : "login-required")
+                                }
+                            }}
+                            style={sidebarStyles.menuItem}
+                        >
+                            <span className='icon-wrapper' style={sidebarStyles.icon}>
+                                <BiPlusCircle size={21} color='var(--text-muted)' />
+                            </span>
+                            {!collapsed && <span className='label' style={sidebarStyles.label}>Create Journey</span>}
+                        </div>
 
                         <div
                             className='sidebar-item'
@@ -256,6 +276,11 @@ const Navbar = ({ style = {}, visible = true }) => {
                     onClose={() => setOpenModal("")}
                     title='Login Required'
                 />
+                <CreateJourneyModal
+                    isOpen={openModal === "create-journey"}
+                    onClose={() => setOpenModal("")}
+                    userId={userData?._id}
+                />
             </>
         )
     }
@@ -270,29 +295,7 @@ const Navbar = ({ style = {}, visible = true }) => {
                 <div style={mobileStyles.left}>
                     <span style={mobileStyles.brand}>LifeMax</span>
                 </div>
-                <div style={mobileStyles.center}></div>
                 <div style={{ ...mobileStyles.right, gap: 2, flexWrap: 'nowrap' }}>
-                    {/* Discover */}
-                    <button
-                        className='mobile-icon-button'
-                        style={{
-                            ...mobileStyles.iconButton,
-                            width: 38,
-                            height: 38,
-                            marginLeft: 4,
-                        }}
-                        onClick={() => {
-                            setOpenModal("")
-                            navigate("/discover")
-                        }}
-                        aria-label='Discover'
-                    >
-                        <BiCompass
-                            size={20}
-                            color='#fff'
-                        />
-                    </button>
-
                     {/* Messages Icon */}
                     <button
                         className='mobile-icon-button'
@@ -309,17 +312,16 @@ const Navbar = ({ style = {}, visible = true }) => {
                         aria-label='Messages'
                     >
                         <BiMessage
-                            size={20}
-                            color='#fff'
+                            size={24}
+                            color='#aaa'
                         />
                     </button>
                     {/* Notifications Icon Only */}
                     <button
                         className='mobile-icon-button'
-                        style={{ ...mobileStyles.iconButton, width: 38, height: 38, marginLeft: 4 }}
+                        style={{ ...mobileStyles.iconButton, width: 34, height: 34, marginLeft: 2 }}
                         onClick={() => {
                             if (!token) {
-                                // Show login popup for notifications
                                 setOpenModal("login-required")
                             } else {
                                 setOpenModal("notifications")
@@ -328,8 +330,27 @@ const Navbar = ({ style = {}, visible = true }) => {
                         aria-label='Notifications'
                     >
                         <BiBell
-                            size={20}
-                            color='#fff'
+                            size={24}
+                            color='#aaa'
+                        />
+                    </button>
+
+                    {/* Create Icon */}
+                    <button
+                        className='mobile-icon-button'
+                        style={{ ...mobileStyles.iconButton, width: 34, height: 34, marginLeft: 2 }}
+                        onClick={() => {
+                            if (!token) {
+                                setOpenModal("login-required")
+                            } else {
+                                setOpenModal("create-journey")
+                            }
+                        }}
+                        aria-label='Create'
+                    >
+                        <BiPlusCircle
+                            size={24}
+                            color='#aaa'
                         />
                     </button>
                 </div>
@@ -405,6 +426,21 @@ const Navbar = ({ style = {}, visible = true }) => {
                     />
                 </button>
 
+                {/* Discover */}
+                <button
+                    style={mobileStyles.iconButton}
+                    onClick={() => {
+                        setOpenModal("")
+                        navigate("/discover")
+                    }}
+                    aria-label='Discover'
+                >
+                    <BiCompass
+                        size={24}
+                        color='#aaa'
+                    />
+                </button>
+
                 {/* Create */}
 
                 {/* Profile */}
@@ -456,6 +492,11 @@ const Navbar = ({ style = {}, visible = true }) => {
                 isOpen={openModal === "login-required"}
                 onClose={() => setOpenModal("")}
                 title='Login Required'
+            />
+            <CreateJourneyModal
+                isOpen={openModal === "create-journey"}
+                onClose={() => setOpenModal("")}
+                userId={userData?._id}
             />
         </>
     )
@@ -610,23 +651,17 @@ const sidebarStyles = {
 // Mobile sidebarStyles
 const mobileStyles = {
     header: {
-        backgroundColor: "var(--surface)",
+        backgroundColor: "#0a0e1d",
         position: "fixed",
         width: "100%",
         top: 0,
         zIndex: 1000,
-        boxShadow: "0 2px 18px rgba(0, 0, 0, 0.22)",
-        display: "flex",
-        alignItems: "center",
-        height: 56,
-        padding: "0 0.75rem",
-        justifyContent: "space-between",
-        overflow: "visible",
+        backgroundColor: "var(--surface)",
     },
     left: {
-        flex: 1,
         display: "flex",
         alignItems: "center",
+        flexShrink: 0,
     },
     center: {
         flex: 1,
@@ -635,18 +670,20 @@ const mobileStyles = {
         justifyContent: "center",
     },
     right: {
-        flex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end",
+        gap: 4,
+        flexShrink: 0,
     },
     brand: {
         color: "#ff4444",
-        fontSize: "1.2rem",
+        fontSize: "1rem",
         fontWeight: "bold",
         textDecoration: "none",
         flexShrink: 0,
         zIndex: 1001,
+        marginRight: 8,
     },
     iconButton: {
         background: "none",
